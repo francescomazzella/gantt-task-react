@@ -1,0 +1,10 @@
+.taskListTable {
+    height: var(--gantt-height);
+    border-spacing: 0;
+    table-layout: fixed;
+}
+
+.sticky {
+    position: sticky;
+    left: 0;
+}

@@ -1,19 +1,23 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useMemo } from 'react';
 import { Task } from "../../types/public-types";
 import { BarTask } from "../../types/bar-task";
+import { defaultDateTimeOptions, toLocaleDateStringFactory } from '../../helpers/date-helper';
 import styles from "./tooltip.module.css";
+
+const Y_OFFSET = 20;
 
 export type TooltipProps = {
   task: BarTask;
   arrowIndent: number;
+  locale: string;
   rtl: boolean;
   svgContainerHeight: number;
   svgContainerWidth: number;
   svgWidth: number;
   headerHeight: number;
   taskListWidth: number;
-  scrollX: number;
-  scrollY: number;
+  mouseX: number;
+  mouseY: number;
   rowHeight: number;
   fontSize: string;
   fontFamily: string;
@@ -21,16 +25,18 @@ export type TooltipProps = {
     task: Task;
     fontSize: string;
     fontFamily: string;
+    locale: string;
   }>;
 };
 export const Tooltip: React.FC<TooltipProps> = ({
   task,
   rowHeight,
+  locale,
   rtl,
   svgContainerHeight,
   svgContainerWidth,
-  scrollX,
-  scrollY,
+  mouseX,
+  mouseY,
   arrowIndent,
   fontSize,
   fontFamily,
@@ -39,56 +45,41 @@ export const Tooltip: React.FC<TooltipProps> = ({
   TooltipContent,
 }) => {
   const tooltipRef = useRef<HTMLDivElement | null>(null);
-  const [relatedY, setRelatedY] = useState(0);
-  const [relatedX, setRelatedX] = useState(0);
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+
   useEffect(() => {
-    if (tooltipRef.current) {
-      const tooltipHeight = tooltipRef.current.offsetHeight * 1.1;
-      const tooltipWidth = tooltipRef.current.offsetWidth * 1.1;
+    if (!tooltipRef.current) return;
 
-      let newRelatedY = task.index * rowHeight - scrollY + headerHeight;
-      let newRelatedX: number;
-      if (rtl) {
-        newRelatedX = task.x1 - arrowIndent * 1.5 - tooltipWidth - scrollX;
-        if (newRelatedX < 0) {
-          newRelatedX = task.x2 + arrowIndent * 1.5 - scrollX;
-        }
-        const tooltipLeftmostPoint = tooltipWidth + newRelatedX;
-        if (tooltipLeftmostPoint > svgContainerWidth) {
-          newRelatedX = svgContainerWidth - tooltipWidth;
-          newRelatedY += rowHeight;
-        }
-      } else {
-        newRelatedX = task.x2 + arrowIndent * 1.5 + taskListWidth - scrollX;
-        const tooltipLeftmostPoint = tooltipWidth + newRelatedX;
-        const fullChartWidth = taskListWidth + svgContainerWidth;
-        if (tooltipLeftmostPoint > fullChartWidth) {
-          newRelatedX =
-            task.x1 +
-            taskListWidth -
-            arrowIndent * 1.5 -
-            scrollX -
-            tooltipWidth;
-        }
-        if (newRelatedX < taskListWidth) {
-          newRelatedX = svgContainerWidth + taskListWidth - tooltipWidth;
-          newRelatedY += rowHeight;
-        }
-      }
+    const tooltipWidth = tooltipRef.current.offsetWidth;
+    const tooltipHeight = tooltipRef.current.offsetHeight;
+    const windowWidth = window.innerWidth - 20;
+    const windowHeight = window.innerHeight - 20;
 
-      const tooltipLowerPoint = tooltipHeight + newRelatedY - scrollY;
-      if (tooltipLowerPoint > svgContainerHeight - scrollY) {
-        newRelatedY = svgContainerHeight - tooltipHeight;
-      }
-      setRelatedY(newRelatedY);
-      setRelatedX(newRelatedX);
+    // Calculate the position for the tooltip, keeping it inside the window boundaries
+    let x = mouseX - tooltipWidth / 2;
+    let y = mouseY + Y_OFFSET;
+
+    // Adjust tooltip position if it's too close to the right or left edge
+    if (x < 0) {
+      x = 0;
+    } else if (x + tooltipWidth > windowWidth) {
+      x = windowWidth - tooltipWidth;
     }
+
+    // Adjust tooltip position if it's too close to the bottom or top edge
+    if (y + tooltipHeight > windowHeight) {
+      y = mouseY - tooltipHeight - Y_OFFSET;
+    }
+
+    setTooltipPosition(() => {
+      return { x, y };
+    });
   }, [
     tooltipRef,
     task,
     arrowIndent,
-    scrollX,
-    scrollY,
+    mouseX,
+    mouseY,
     headerHeight,
     taskListWidth,
     rowHeight,
@@ -100,14 +91,13 @@ export const Tooltip: React.FC<TooltipProps> = ({
   return (
     <div
       ref={tooltipRef}
-      className={
-        relatedX
-          ? styles.tooltipDetailsContainer
-          : styles.tooltipDetailsContainerHidden
-      }
-      style={{ left: relatedX, top: relatedY }}
+      className={styles.tooltipContainer}
+      style={{
+        left: tooltipPosition.x,
+        top: tooltipPosition.y,
+      }}
     >
-      <TooltipContent task={task} fontSize={fontSize} fontFamily={fontFamily} />
+      <TooltipContent task={task} fontSize={fontSize} fontFamily={fontFamily} locale={locale} />
     </div>
   );
 };
@@ -116,30 +106,35 @@ export const StandardTooltipContent: React.FC<{
   task: Task;
   fontSize: string;
   fontFamily: string;
-}> = ({ task, fontSize, fontFamily }) => {
+  locale: string;
+}> = ({ task, fontSize, fontFamily, locale }) => {
   const style = {
     fontSize,
     fontFamily,
   };
+
+  const toLocaleDateString = useMemo(
+    () => toLocaleDateStringFactory(locale),
+    [locale]
+  );
+
   return (
     <div className={styles.tooltipDefaultContainer} style={style}>
-      <b style={{ fontSize: fontSize + 6 }}>{`${
-        task.name
-      }: ${task.start.getDate()}-${
-        task.start.getMonth() + 1
-      }-${task.start.getFullYear()} - ${task.end.getDate()}-${
-        task.end.getMonth() + 1
-      }-${task.end.getFullYear()}`}</b>
+      <strong style={{ fontSize: parseInt(fontSize) + 6 }}>{`${task.name}`}</strong>
+
       {task.end.getTime() - task.start.getTime() !== 0 && (
-        <p className={styles.tooltipDefaultContainerParagraph}>{`Duration: ${~~(
-          (task.end.getTime() - task.start.getTime()) /
-          (1000 * 60 * 60 * 24)
-        )} day(s)`}</p>
+        <span className={styles.tooltipDefaultContainerParagraph}>
+          <span><br />{`${toLocaleDateString(task.start, defaultDateTimeOptions)} - ${toLocaleDateString(task.end, defaultDateTimeOptions)} (${formatDuration(task.start, task.end)})`}</span>
+          {!!task.progress && <span><span className={styles.tooltipDefaultContainerParagraph}>Progress: {task.progress}%</span></span>}
+        </span>
       )}
 
-      <p className={styles.tooltipDefaultContainerParagraph}>
-        {!!task.progress && `Progress: ${task.progress} %`}
-      </p>
     </div>
   );
+};
+
+const formatDuration = (startDate: Date, endDate: Date) => {
+  const durationInMilliseconds = endDate.getTime() - startDate.getTime();
+  const durationInDays = Math.floor(durationInMilliseconds / (1000 * 60 * 60 * 24));
+  return `${durationInDays} ${durationInDays === 1 ? 'day' : 'days'}`;
 };

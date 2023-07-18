@@ -1,23 +1,16 @@
-.ganttTable {
-  display: table;
-  border-bottom: #e6e4e4 1px solid;
-  border-top: #e6e4e4 1px solid;
-  border-left: #e6e4e4 1px solid;
+.tableHeaderCell {
+    padding: 4px 10px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    border-bottom: 1px solid #e6e4e4;
+    background-color: #ffffff;
+}
+.tableHeaderCell:not(:nth-child(1)) {
+    border-right: 1px solid #e6e4e4;
 }
 
-.ganttTable_Header {
-  display: table-row;
-  list-style: none;
-}
 
-.ganttTable_HeaderSeparator {
-  border-right: 1px solid rgb(196, 196, 196);
-  opacity: 1;
-  margin-left: -2px;
-}
-
-.ganttTable_HeaderItem {
-  display: table-cell;
-  vertical-align: -webkit-baseline-middle;
-  vertical-align: middle;
+.expanderCell {
+    width: min-content;
 }

@@ -1,31 +1,31 @@
-import React, { useEffect, useRef } from "react";
+import React, { useMemo } from "react";
 import { BarTask } from "../../types/bar-task";
-import { Task } from "../../types/public-types";
+import { ColumnOption, Task } from "../../types/public-types";
+import styles from './task-list.module.css';
+import {defaultDateTimeOptions, toLocaleDateStringFactory} from '../../helpers/date-helper';
 
 export type TaskListProps = {
   headerHeight: number;
-  rowWidth: string;
   fontFamily: string;
   fontSize: string;
   rowHeight: number;
   ganttHeight: number;
-  scrollY: number;
+  stickyTable: boolean;
   locale: string;
   tasks: Task[];
-  taskListRef: React.RefObject<HTMLDivElement>;
+  taskListRef: React.RefObject<HTMLTableElement>;
   horizontalContainerClass?: string;
   selectedTask: BarTask | undefined;
   setSelectedTask: (task: string) => void;
   onExpanderClick: (task: Task) => void;
   TaskListHeader: React.FC<{
     headerHeight: number;
-    rowWidth: string;
     fontFamily: string;
     fontSize: string;
+    columns: ColumnOption[];
   }>;
   TaskListTable: React.FC<{
     rowHeight: number;
-    rowWidth: string;
     fontFamily: string;
     fontSize: string;
     locale: string;
@@ -33,44 +33,53 @@ export type TaskListProps = {
     selectedTaskId: string;
     setSelectedTask: (taskId: string) => void;
     onExpanderClick: (task: Task) => void;
+    columns: ColumnOption[];
   }>;
+  columns?: ColumnOption[];
+  taskListCustomClass?: string;
 };
 
 export const TaskList: React.FC<TaskListProps> = ({
   headerHeight,
   fontFamily,
   fontSize,
-  rowWidth,
   rowHeight,
-  scrollY,
   tasks,
   selectedTask,
   setSelectedTask,
   onExpanderClick,
   locale,
   ganttHeight,
+  stickyTable,
   taskListRef,
-  horizontalContainerClass,
+  // horizontalContainerClass,
   TaskListHeader,
   TaskListTable,
+  columns,
+  taskListCustomClass,
 }) => {
-  const horizontalContainerRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (horizontalContainerRef.current) {
-      horizontalContainerRef.current.scrollTop = scrollY;
-    }
-  }, [scrollY]);
+  const toLocaleDateString = useMemo(
+    () => toLocaleDateStringFactory(locale),
+    [locale]
+  );
+
+  const dateCustomRender = (value: Date) => toLocaleDateString(value, defaultDateTimeOptions);
+
+  const cols: ColumnOption[] = columns ?? [
+    { header: "Name", dataPath: "name" },
+    { header: "From", dataPath: "start", customRender: dateCustomRender },
+    { header: "To", dataPath: "end", customRender: dateCustomRender },
+  ] as ColumnOption[];
 
   const headerProps = {
     headerHeight,
     fontFamily,
     fontSize,
-    rowWidth,
+    columns: cols,
   };
   const selectedTaskId = selectedTask ? selectedTask.id : "";
   const tableProps = {
     rowHeight,
-    rowWidth,
     fontFamily,
     fontSize,
     tasks,
@@ -78,18 +87,17 @@ export const TaskList: React.FC<TaskListProps> = ({
     selectedTaskId: selectedTaskId,
     setSelectedTask,
     onExpanderClick,
+    columns: cols,
   };
-
+  
   return (
-    <div ref={taskListRef}>
+    <table
+      ref={taskListRef}
+      className={`${styles.taskListTable} ${stickyTable && styles.sticky} ${taskListCustomClass ?? ''}`}
+      style={{ "--gantt-height": ganttHeight ? `${ganttHeight}px` : "unset" } as React.CSSProperties}
+    >
       <TaskListHeader {...headerProps} />
-      <div
-        ref={horizontalContainerRef}
-        className={horizontalContainerClass}
-        style={ganttHeight ? { height: ganttHeight } : {}}
-      >
-        <TaskListTable {...tableProps} />
-      </div>
-    </div>
+      <TaskListTable {...tableProps} />
+    </table>
   );
 };

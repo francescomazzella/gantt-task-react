@@ -1,7 +1,9 @@
 .tooltipDefaultContainer {
   background: #fff;
   padding: 12px;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.26);
+  border-radius: 4px;
+  max-width: 50vw;
 }
 
 .tooltipDefaultContainerParagraph {
@@ -27,4 +29,15 @@
   position: absolute;
   display: flex;
   pointer-events: none;
+}
+
+.tooltipContainer {
+  position: fixed;
+  animation: fade-in 0.15s ease-in-out;
+  pointer-events: none;
+}
+
+@keyframes fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }

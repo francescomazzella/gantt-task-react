@@ -10,7 +10,7 @@ export enum ViewMode {
   Year = "Year",
 }
 export type TaskType = "task" | "milestone" | "project";
-export interface Task {
+export interface Task<T = any> {
   id: string;
   type: TaskType;
   name: string;
@@ -19,7 +19,7 @@ export interface Task {
   /**
    * From 0 to 100
    */
-  progress: number;
+  progress?: number;
   styles?: {
     backgroundColor?: string;
     backgroundSelectedColor?: string;
@@ -31,6 +31,7 @@ export interface Task {
   dependencies?: string[];
   hideChildren?: boolean;
   displayOrder?: number;
+  userData?: T;
 }
 
 export interface EventOption {
@@ -88,11 +89,14 @@ export interface DisplayOption {
 export interface StylingOption {
   headerHeight?: number;
   columnWidth?: number;
-  listCellWidth?: string;
   rowHeight?: number;
   ganttHeight?: number;
   barCornerRadius?: number;
   handleWidth?: number;
+  stickyTable?: boolean;
+  hideTable?: boolean;
+  showNames?: boolean;
+  showTooltip?: boolean;
   fontFamily?: string;
   fontSize?: string;
   /**
@@ -113,6 +117,9 @@ export interface StylingOption {
   arrowColor?: string;
   arrowIndent?: number;
   todayColor?: string;
+  containerCustomClass?: string;
+  taskListCustomClass?: string;
+  ganttCustomClass?: string;
   TooltipContent?: React.FC<{
     task: Task;
     fontSize: string;
@@ -120,16 +127,15 @@ export interface StylingOption {
   }>;
   TaskListHeader?: React.FC<{
     headerHeight: number;
-    rowWidth: string;
     fontFamily: string;
     fontSize: string;
+    customClass?: string;
   }>;
   TaskListTable?: React.FC<{
     rowHeight: number;
-    rowWidth: string;
     fontFamily: string;
     fontSize: string;
-    locale: string;
+    customClass?: string;
     tasks: Task[];
     selectedTaskId: string;
     /**
@@ -140,6 +146,19 @@ export interface StylingOption {
   }>;
 }
 
-export interface GanttProps extends EventOption, DisplayOption, StylingOption {
+export interface ColumnOption {
+  header: string;
+  dataPath: string;
+  width?: string;
+  style?: React.CSSProperties,
+  headerStyle?: React.CSSProperties,
+  customRender?: (value: any) => JSX.Element;
+}
+
+export interface TableOption {
+  columns?: ColumnOption[];
+}
+
+export interface GanttProps extends EventOption, DisplayOption, StylingOption, TableOption {
   tasks: Task[];
 }

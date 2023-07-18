@@ -169,7 +169,7 @@ const convertToBar = (
   const [progressWidth, progressX] = progressWithByParams(
     x1,
     x2,
-    task.progress,
+    task.progress ?? 0,
     rtl
   );
   const y = taskYCoordinate(index, rowHeight, taskHeight);
@@ -276,7 +276,7 @@ const taskYCoordinate = (
 export const progressWithByParams = (
   taskX1: number,
   taskX2: number,
-  progress: number,
+  progress: number = 0,
   rtl: boolean
 ) => {
   const progressWidth = (taskX2 - taskX1) * progress * 0.01;

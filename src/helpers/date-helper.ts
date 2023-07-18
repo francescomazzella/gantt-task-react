@@ -11,7 +11,7 @@ type DateHelperScales =
   | "second"
   | "millisecond";
 
-const intlDTCache = {};
+const intlDTCache: { [key: string]: DateTimeFormat } = {};
 export const getCachedDateTimeFormat = (
   locString: string | string[],
   opts: DateTimeFormatOptions = {}
@@ -238,4 +238,23 @@ export const getWeekNumberISO8601 = (date: Date) => {
 
 export const getDaysInMonth = (month: number, year: number) => {
   return new Date(year, month + 1, 0).getDate();
+};
+
+export const localeDateStringCache: { [key: string]: string } = {};
+
+export const toLocaleDateStringFactory = (locale: string) => (date: Date, dateTimeOptions: Intl.DateTimeFormatOptions) => {
+  const key = date.toString();
+  let lds = localeDateStringCache[key];
+  if (!lds) {
+    lds = date.toLocaleDateString(locale, dateTimeOptions);
+    localeDateStringCache[key] = lds;
+  }
+  return lds;
+};
+
+export const defaultDateTimeOptions: Intl.DateTimeFormatOptions = {
+  weekday: "short",
+  year: "numeric",
+  month: "long",
+  day: "numeric",
 };

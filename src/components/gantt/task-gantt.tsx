@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import { GridProps, Grid } from "../grid/grid";
 import { CalendarProps, Calendar } from "../calendar/calendar";
 import { TaskGanttContentProps, TaskGanttContent } from "./task-gantt-content";
@@ -9,38 +9,21 @@ export type TaskGanttProps = {
   calendarProps: CalendarProps;
   barProps: TaskGanttContentProps;
   ganttHeight: number;
-  scrollY: number;
-  scrollX: number;
+  customClass?: string;
 };
 export const TaskGantt: React.FC<TaskGanttProps> = ({
   gridProps,
   calendarProps,
   barProps,
   ganttHeight,
-  scrollY,
-  scrollX,
+  customClass,
 }) => {
   const ganttSVGRef = useRef<SVGSVGElement>(null);
-  const horizontalContainerRef = useRef<HTMLDivElement>(null);
-  const verticalGanttContainerRef = useRef<HTMLDivElement>(null);
   const newBarProps = { ...barProps, svg: ganttSVGRef };
-
-  useEffect(() => {
-    if (horizontalContainerRef.current) {
-      horizontalContainerRef.current.scrollTop = scrollY;
-    }
-  }, [scrollY]);
-
-  useEffect(() => {
-    if (verticalGanttContainerRef.current) {
-      verticalGanttContainerRef.current.scrollLeft = scrollX;
-    }
-  }, [scrollX]);
 
   return (
     <div
-      className={styles.ganttVerticalContainer}
-      ref={verticalGanttContainerRef}
+      className={`${styles.ganttVerticalContainer} ${customClass ?? ''}`}
       dir="ltr"
     >
       <svg
@@ -52,7 +35,6 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
         <Calendar {...calendarProps} />
       </svg>
       <div
-        ref={horizontalContainerRef}
         className={styles.horizontalContainer}
         style={
           ganttHeight
