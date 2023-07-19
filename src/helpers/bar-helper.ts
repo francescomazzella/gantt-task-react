@@ -84,6 +84,10 @@ const convertToBar = (
     barProgressSelectedColor,
     barBackgroundColor,
     barBackgroundSelectedColor,
+    projectProgressColor,
+    projectProgressSelectedColor,
+    projectBackgroundColor,
+    projectBackgroundSelectedColor,
   } = options;
 
   let x1: number;
@@ -106,10 +110,10 @@ const convertToBar = (
   const hideChildren = task.type === "project" ? task.hideChildren : undefined;
 
   const styles: BarTaskStyles = {
-    backgroundColor: barBackgroundColor,
-    backgroundSelectedColor: barBackgroundSelectedColor,
-    progressColor: barProgressColor,
-    progressSelectedColor: barProgressSelectedColor,
+    backgroundColor: task.type === 'project' ? projectBackgroundColor : barBackgroundColor,
+    backgroundSelectedColor: task.type === 'project' ? projectBackgroundSelectedColor : barBackgroundSelectedColor,
+    progressColor: task.type === 'project' ? projectProgressColor : barProgressColor,
+    progressSelectedColor: task.type === 'project' ? projectProgressSelectedColor : barProgressSelectedColor,
     ...task.styles,
   };
 
