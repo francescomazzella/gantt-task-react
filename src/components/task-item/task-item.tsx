@@ -15,6 +15,7 @@ export type TaskItemProps = {
   isDateChangeable: boolean;
   isDelete: boolean;
   isSelected: boolean;
+  isLocked: boolean;
   rtl: boolean;
   showName: boolean;
   onEventStart: (

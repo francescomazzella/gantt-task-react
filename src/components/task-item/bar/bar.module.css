@@ -19,3 +19,7 @@
   user-select: none;
   stroke-width: 0;
 }
+
+.barLockedHandle {
+  fill: var(--locked-handle-fill);
+}

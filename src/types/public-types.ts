@@ -27,6 +27,7 @@ export interface Task<T = any> {
     progressSelectedColor?: string;
   };
   isDisabled?: boolean;
+  isLocked?: boolean;
   project?: string;
   dependencies?: string[];
   hideChildren?: boolean;

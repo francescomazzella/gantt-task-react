@@ -13,6 +13,7 @@ export const Bar: React.FC<TaskItemProps> = ({
   rtl,
   onEventStart,
   isSelected,
+  isLocked,
 }) => {
   const progressPoint = getProgressPoint(
     +!rtl * task.progressWidth + task.progressX,
@@ -33,11 +34,11 @@ export const Bar: React.FC<TaskItemProps> = ({
         styles={task.styles}
         isSelected={isSelected}
         onMouseDown={e => {
-          isDateChangeable && onEventStart("move", task, e);
+          !isLocked && isDateChangeable && onEventStart("move", task, e);
         }}
       />
       <g className="handleGroup">
-        {isDateChangeable && (
+        {!isLocked && isDateChangeable && (
           <g>
             {/* left */}
             <BarDateHandle
@@ -72,6 +73,28 @@ export const Bar: React.FC<TaskItemProps> = ({
           />
         )}
       </g>
+      {isLocked && (
+        <g className="lockedGroup">
+          <rect
+            x={task.x1}
+            y={task.y}
+            width={task.handleWidth}
+            height={task.height}
+            className={styles.barLockedHandle}
+            ry={task.barCornerRadius}
+            rx={task.barCornerRadius}
+          />
+          <rect
+            x={task.x2 - task.handleWidth}
+            y={task.y}
+            width={task.handleWidth}
+            height={task.height}
+            className={styles.barLockedHandle}
+            ry={task.barCornerRadius}
+            rx={task.barCornerRadius}
+          />
+        </g>
+      )}
     </g>
   );
 };

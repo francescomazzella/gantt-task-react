@@ -296,6 +296,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
               isSelected={!!selectedTask && task.id === selectedTask.id}
               rtl={rtl}
               showName={showNames}
+              isLocked={task.isLocked ?? false}
             />
           );
         })}
