@@ -83,6 +83,7 @@ export const Bar: React.FC<TaskItemProps> = ({
             className={styles.barLockedHandle}
             ry={task.barCornerRadius}
             rx={task.barCornerRadius}
+            fill={task.baseColor ?? 'black'}
           />
           <rect
             x={task.x2 - task.handleWidth}
@@ -92,6 +93,7 @@ export const Bar: React.FC<TaskItemProps> = ({
             className={styles.barLockedHandle}
             ry={task.barCornerRadius}
             rx={task.barCornerRadius}
+            fill={task.baseColor ?? 'black'}
           />
         </g>
       )}

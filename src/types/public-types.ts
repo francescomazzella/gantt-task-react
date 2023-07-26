@@ -24,6 +24,7 @@ export interface Task<T = any> {
    * From 0 to 100
    */
   progress?: number;
+  baseColor?: string;
   styles?: {
     backgroundColor?: string;
     backgroundSelectedColor?: string;
