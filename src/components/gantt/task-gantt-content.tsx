@@ -28,6 +28,7 @@ export type TaskGanttContentProps = {
   fontFamily: string;
   rtl: boolean;
   showNames: boolean;
+  showBorderOnSelection: boolean;
   setGanttEvent: (value: GanttEvent) => void;
   setFailedTask: (value: BarTask | null) => void;
   setSelectedTask: (taskId: string) => void;
@@ -49,6 +50,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
   fontSize,
   rtl,
   showNames,
+  showBorderOnSelection,
   setGanttEvent,
   setFailedTask,
   setSelectedTask,
@@ -297,6 +299,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
               isSelected={!!selectedTask && task.id === selectedTask.id}
               rtl={rtl}
               showName={showNames}
+              showBorderOnSelection={showBorderOnSelection}
               isLocked={task.isLocked ?? false}
             />
           );

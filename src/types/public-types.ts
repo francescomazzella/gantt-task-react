@@ -123,6 +123,7 @@ export interface StylingOption {
   arrowColor?: string;
   arrowIndent?: number;
   todayColor?: string;
+  showBorderOnSelection?: boolean;
   containerCustomClass?: string;
   taskListCustomClass?: string;
   ganttCustomClass?: string;

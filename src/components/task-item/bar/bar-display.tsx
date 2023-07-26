@@ -11,6 +11,8 @@ type BarDisplayProps = {
   progressX: number;
   progressWidth: number;
   barCornerRadius: number;
+  baseColor?: string;
+  showBorderOnSelection: boolean;
   styles: {
     backgroundColor: string;
     backgroundSelectedColor?: string;
@@ -30,6 +32,8 @@ export const BarDisplay: React.FC<BarDisplayProps> = ({
   barCornerRadius,
   styles,
   onMouseDown,
+  showBorderOnSelection,
+  baseColor = 'black',
 }) => {
   const getProcessColor = () => {
     return isSelected ? styles.progressSelectedColor ?? styles.progressColor : styles.progressColor;
@@ -38,6 +42,11 @@ export const BarDisplay: React.FC<BarDisplayProps> = ({
   const getBarColor = () => {
     return isSelected ? styles.backgroundSelectedColor  ?? styles.backgroundColor : styles.backgroundColor;
   };
+
+  const getStroke = () => showBorderOnSelection && isSelected ? baseColor : undefined;
+  const getStrokeWidth = () => showBorderOnSelection && isSelected ? 2 : 0;
+
+  console.log(getStroke(), getStrokeWidth());
 
   return (
     <g onMouseDown={onMouseDown}>
@@ -49,6 +58,8 @@ export const BarDisplay: React.FC<BarDisplayProps> = ({
         ry={barCornerRadius}
         rx={barCornerRadius}
         fill={getBarColor()}
+        stroke={getStroke()}
+        strokeWidth={getStrokeWidth()}
         className={style.barBackground}
       />
       <rect

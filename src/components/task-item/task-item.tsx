@@ -18,6 +18,7 @@ export type TaskItemProps = {
   isLocked: boolean;
   rtl: boolean;
   showName: boolean;
+  showBorderOnSelection: boolean;
   onEventStart: (
     action: GanttContentMoveAction,
     selectedTask: BarTask,
