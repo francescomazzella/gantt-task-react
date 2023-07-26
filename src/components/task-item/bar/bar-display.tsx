@@ -12,7 +12,7 @@ type BarDisplayProps = {
   progressWidth: number;
   barCornerRadius: number;
   baseColor?: string;
-  showBorderOnSelection: boolean;
+  showBorderOnSelection?: boolean;
   styles: {
     backgroundColor: string;
     backgroundSelectedColor?: string;
