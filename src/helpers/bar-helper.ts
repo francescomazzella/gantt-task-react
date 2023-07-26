@@ -39,12 +39,12 @@ export const convertToBarTasks = (
   });
 
   // set dependencies
-  barTasks = barTasks.map(task => {
-    const dependencies = task.dependencies || [];
-    for (let j = 0; j < dependencies.length; j++) {
-      const dependence = barTasks.findIndex(value => value.id === dependencies[j]);
-      if (dependence !== -1) barTasks[dependence].barChildren.push(task);
-    }
+  barTasks.forEach(task => {
+    task.dependencies?.forEach(depInfo => {
+      const id = (typeof depInfo === 'string') ? depInfo : depInfo.id;
+      const color = (typeof depInfo !== 'string') ? depInfo.color : undefined;
+      barTasks.find(bt => bt.id === id)?.barChildren.push({ barTask: task, color });
+    });
     return task;
   });
 
@@ -105,7 +105,7 @@ const convertToBar = (
     x2 = x1 + handleWidth * 2;
   }
 
-  const [progressWidth, progressX] = progressWithByParams(x1, x2, task.progress ?? 0, rtl);
+  const [progressWidth, progressX] = progressWithByParams(x1, x2, task.progress, rtl);
   const y = taskYCoordinate(index, rowHeight, taskHeight);
   const hideChildren = task.type === "project" ? task.hideChildren : undefined;
 
@@ -217,7 +217,7 @@ export const progressWithByParams = (
   taskX1: number,
   taskX2: number,
   progress: number = 0,
-  rtl: boolean
+  rtl: boolean = false,
 ) => {
   const progressWidth = (taskX2 - taskX1) * progress * 0.01;
   let progressX: number;

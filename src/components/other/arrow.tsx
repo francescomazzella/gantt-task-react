@@ -8,6 +8,7 @@ type ArrowProps = {
   taskHeight: number;
   arrowIndent: number;
   rtl: boolean;
+  color?: string;
 };
 export const Arrow: React.FC<ArrowProps> = ({
   taskFrom,
@@ -16,6 +17,7 @@ export const Arrow: React.FC<ArrowProps> = ({
   taskHeight,
   arrowIndent,
   rtl,
+  color,
 }) => {
   let path: string;
   let trianglePoints: string;
@@ -39,8 +41,8 @@ export const Arrow: React.FC<ArrowProps> = ({
 
   return (
     <g className="arrow">
-      <path strokeWidth="1.5" d={path} fill="none" />
-      <polygon points={trianglePoints} />
+      <path stroke={color} strokeWidth="1.5" d={path} fill="none" />
+      <polygon stroke={color} fill={color} points={trianglePoints} />
     </g>
   );
 };

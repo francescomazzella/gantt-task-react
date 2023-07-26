@@ -11,13 +11,18 @@ export interface BarTask extends Task {
   progressWidth: number;
   barCornerRadius: number;
   handleWidth: number;
-  barChildren: BarTask[];
+  barChildren: BarChildInfo[];
   styles: {
     backgroundColor: string;
     backgroundSelectedColor: string;
     progressColor: string;
     progressSelectedColor: string;
   };
+}
+
+export type BarChildInfo = {
+  barTask: BarTask,
+  color?: string,
 }
 
 export type TaskTypeInternal = TaskType | "smalltask";
