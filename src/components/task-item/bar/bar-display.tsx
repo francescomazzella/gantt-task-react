@@ -46,8 +46,6 @@ export const BarDisplay: React.FC<BarDisplayProps> = ({
   const getStroke = () => showBorderOnSelection && isSelected ? baseColor : undefined;
   const getStrokeWidth = () => showBorderOnSelection && isSelected ? 2 : 0;
 
-  console.log(getStroke(), getStrokeWidth());
-
   return (
     <g onMouseDown={onMouseDown}>
       <rect
