@@ -63,7 +63,7 @@ export const TaskListTableDefault: React.FC<{
                     key={`${t.id} ${col.header}`}
                     className={styles.cell}
                     style={style}
-                    title={String(value)}
+                    title={value && String(value)}
                   >
                     {col.customRender ? col.customRender(value) : value}
                   </td>

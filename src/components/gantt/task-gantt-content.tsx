@@ -272,6 +272,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
             return (
               <Arrow
                 key={`Arrow from ${task.id} to ${tasks[child.index].id}`}
+                tasks={tasks}
                 taskFrom={task}
                 taskTo={tasks[child.index]}
                 rowHeight={rowHeight}

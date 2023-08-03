@@ -46,7 +46,7 @@ export interface EventOption {
    */
   timeStep?: number;
   /**
-   * Invokes on bar select on unselect.
+   * Invokes on bar select or unselect.
    */
   onSelect?: (task: Task, isSelected: boolean) => void;
   /**

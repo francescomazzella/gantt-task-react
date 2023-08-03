@@ -2,6 +2,7 @@ import React from "react";
 import { BarTask } from "../../types/bar-task";
 
 type ArrowProps = {
+  tasks: BarTask[];
   taskFrom: BarTask;
   taskTo: BarTask;
   rowHeight: number;
@@ -11,6 +12,7 @@ type ArrowProps = {
   color?: string;
 };
 export const Arrow: React.FC<ArrowProps> = ({
+  tasks,
   taskFrom,
   taskTo,
   rowHeight,
@@ -31,6 +33,7 @@ export const Arrow: React.FC<ArrowProps> = ({
     );
   } else {
     [path, trianglePoints] = drownPathAndTriangle(
+      tasks,
       taskFrom,
       taskTo,
       rowHeight,
@@ -48,20 +51,22 @@ export const Arrow: React.FC<ArrowProps> = ({
 };
 
 const drownPathAndTriangle = (
+  tasks: BarTask[],
   taskFrom: BarTask,
   taskTo: BarTask,
   rowHeight: number,
   taskHeight: number,
   arrowIndent: number
 ) => {
+  const minXForToTask = tasks.slice(taskFrom.index, taskTo.index + 1).reduce((min, task) => Math.min(min, task.x1), tasks[taskFrom.index].x1);
   const indexCompare = taskFrom.index > taskTo.index ? -1 : 1;
   const taskToEndPosition = taskTo.y + taskHeight / 2;
   const taskFromEndPosition = taskFrom.x2 + arrowIndent * 2;
   const taskFromHorizontalOffsetValue =
-    taskFromEndPosition < taskTo.x1 ? "" : `H ${taskTo.x1 - arrowIndent}`;
+    taskFromEndPosition < taskTo.x1 ? "" : `H ${minXForToTask - arrowIndent}`;
   const taskToHorizontalOffsetValue =
     taskFromEndPosition > taskTo.x1
-      ? arrowIndent
+      ? taskTo.x1 - minXForToTask + arrowIndent
       : taskTo.x1 - taskFrom.x2 - arrowIndent;
 
   const path = `M ${taskFrom.x2} ${taskFrom.y + taskHeight / 2} 
