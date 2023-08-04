@@ -1,13 +1,8 @@
 import React from "react";
 import styles from "./task-list-header.module.css";
-import { ColumnOption } from "../../types/public-types";
+import { TaskListHeader } from "../../types/public-types";
 
-export const TaskListHeaderDefault: React.FC<{
-  headerHeight: number;
-  fontFamily: string;
-  fontSize: string;
-  columns: ColumnOption[];
-}> = ({
+export const TaskListHeaderDefault: TaskListHeader = ({
   headerHeight,
   fontFamily,
   fontSize,
@@ -21,7 +16,7 @@ export const TaskListHeaderDefault: React.FC<{
           fontSize
         }}>
           <th className={`${styles.expanderCell} ${styles.tableHeaderCell}`}></th>
-          {columns.map(col => {
+          {columns?.map(col => {
             const style = col.headerStyle ?? {};
             if (col.width) style.width = col.width;
             return (

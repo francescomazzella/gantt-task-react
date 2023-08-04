@@ -131,19 +131,24 @@ export interface StylingOption {
   containerCustomClass?: string;
   taskListCustomClass?: string;
   ganttCustomClass?: string;
-  TooltipContent?: React.FC<{
-    task: Task;
-    fontSize: string;
-    fontFamily: string;
-  }>;
-  TaskListHeader?: React.FC<{
+  TooltipContent?: TooltipContent;
+  TaskListHeader?: TaskListHeader;
+  TaskListTable?: TaskListTable;
+}
+
+export type TooltipContent = React.FC<{
+  task: Task;
+  fontSize: string;
+  fontFamily: string;
+  locale: string;
+}>;
+
+export type TaskListHeader = React.FC<{
     headerHeight: number;
     fontFamily: string;
     fontSize: string;
     customClass?: string;
-  }>;
-  TaskListTable?: TaskListTable;
-}
+} & TableOption>;
 
 export type TaskListTable = React.FC<{
   rowHeight: number;

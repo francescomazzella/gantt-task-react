@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useMemo } from 'react';
-import { Task } from "../../types/public-types";
+import { Task, TooltipContent } from "../../types/public-types";
 import { BarTask } from "../../types/bar-task";
 import { defaultDateTimeOptions, toLocaleDateStringFactory } from '../../helpers/date-helper';
 import styles from "./tooltip.module.css";
@@ -21,12 +21,7 @@ export type TooltipProps = {
   rowHeight: number;
   fontSize: string;
   fontFamily: string;
-  TooltipContent: React.FC<{
-    task: Task;
-    fontSize: string;
-    fontFamily: string;
-    locale: string;
-  }>;
+  TooltipContent: TooltipContent;
 };
 export const Tooltip: React.FC<TooltipProps> = ({
   task,

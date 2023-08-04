@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { BarTask } from "../../types/bar-task";
-import { ColumnOption, Task, TaskListTable } from "../../types/public-types";
+import { ColumnOption, Task, TaskListHeader, TaskListTable } from "../../types/public-types";
 import styles from './task-list.module.css';
 import {defaultDateTimeOptions, toLocaleDateStringFactory} from '../../helpers/date-helper';
 
@@ -18,12 +18,7 @@ export type TaskListProps = {
   selectedTasks: BarTask[];
   onTaskSelection: (taskId: string, ctrlKey: boolean, shiftKey: boolean) => void;
   onExpanderClick: (task: Task) => void;
-  TaskListHeader: React.FC<{
-    headerHeight: number;
-    fontFamily: string;
-    fontSize: string;
-    columns: ColumnOption[];
-  }>;
+  TaskListHeader: TaskListHeader;
   TaskListTable: TaskListTable;
   columns?: ColumnOption[];
   taskListCustomClass?: string;
