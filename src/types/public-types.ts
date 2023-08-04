@@ -50,6 +50,10 @@ export interface EventOption {
    */
   onSelect?: (task: Task, isSelected: boolean) => void;
   /**
+   * Invokes on bar selection.
+   */
+  onSelectionChange?: (tasks: Task[], activeTask?: Task) => void;
+  /**
    * Invokes on bar double click.
    */
   onDoubleClick?: (task: Task) => void;
@@ -138,20 +142,22 @@ export interface StylingOption {
     fontSize: string;
     customClass?: string;
   }>;
-  TaskListTable?: React.FC<{
-    rowHeight: number;
-    fontFamily: string;
-    fontSize: string;
-    customClass?: string;
-    tasks: Task[];
-    selectedTaskId: string;
-    /**
-     * Sets selected task by id
-     */
-    setSelectedTask: (taskId: string) => void;
-    onExpanderClick: (task: Task) => void;
-  }>;
+  TaskListTable?: TaskListTable;
 }
+
+export type TaskListTable = React.FC<{
+  rowHeight: number;
+  fontFamily: string;
+  fontSize: string;
+  customClass?: string;
+  tasks: Task[];
+  selectedTaskIds: string[];
+  /**
+   * Handle task selection by id
+   */
+  onTaskSelection: (taskId: string, ctrlKey: boolean, shiftKey: boolean) => void;
+  onExpanderClick: (task: Task) => void;
+} & TableOption>
 
 export interface ColumnOption {
   header: string;
@@ -168,4 +174,5 @@ export interface TableOption {
 
 export interface GanttProps extends EventOption, DisplayOption, StylingOption, TableOption {
   tasks: Task[];
+  multiselection?: boolean;
 }

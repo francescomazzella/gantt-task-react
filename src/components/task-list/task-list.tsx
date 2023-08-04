@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { BarTask } from "../../types/bar-task";
-import { ColumnOption, Task } from "../../types/public-types";
+import { ColumnOption, Task, TaskListTable } from "../../types/public-types";
 import styles from './task-list.module.css';
 import {defaultDateTimeOptions, toLocaleDateStringFactory} from '../../helpers/date-helper';
 
@@ -15,8 +15,8 @@ export type TaskListProps = {
   tasks: Task[];
   taskListRef: React.RefObject<HTMLTableElement>;
   horizontalContainerClass?: string;
-  selectedTask: BarTask | undefined;
-  setSelectedTask: (task: string) => void;
+  selectedTasks: BarTask[];
+  onTaskSelection: (taskId: string, ctrlKey: boolean, shiftKey: boolean) => void;
   onExpanderClick: (task: Task) => void;
   TaskListHeader: React.FC<{
     headerHeight: number;
@@ -24,17 +24,7 @@ export type TaskListProps = {
     fontSize: string;
     columns: ColumnOption[];
   }>;
-  TaskListTable: React.FC<{
-    rowHeight: number;
-    fontFamily: string;
-    fontSize: string;
-    locale: string;
-    tasks: Task[];
-    selectedTaskId: string;
-    setSelectedTask: (taskId: string) => void;
-    onExpanderClick: (task: Task) => void;
-    columns: ColumnOption[];
-  }>;
+  TaskListTable: TaskListTable;
   columns?: ColumnOption[];
   taskListCustomClass?: string;
 };
@@ -45,8 +35,8 @@ export const TaskList: React.FC<TaskListProps> = ({
   fontSize,
   rowHeight,
   tasks,
-  selectedTask,
-  setSelectedTask,
+  selectedTasks,
+  onTaskSelection,
   onExpanderClick,
   locale,
   ganttHeight,
@@ -77,15 +67,15 @@ export const TaskList: React.FC<TaskListProps> = ({
     fontSize,
     columns: cols,
   };
-  const selectedTaskId = selectedTask ? selectedTask.id : "";
+  const selectedTaskIds = selectedTasks.map(t => t.id);
   const tableProps = {
     rowHeight,
     fontFamily,
     fontSize,
     tasks,
     locale,
-    selectedTaskId: selectedTaskId,
-    setSelectedTask,
+    selectedTaskIds,
+    onTaskSelection,
     onExpanderClick,
     columns: cols,
   };

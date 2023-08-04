@@ -1,17 +1,8 @@
 import React from "react";
 import styles from "./task-list-table.module.css";
-import { ColumnOption, Task } from "../../types/public-types";
+import { TaskListTable } from "../../types/public-types";
 
-export const TaskListTableDefault: React.FC<{
-  rowHeight: number;
-  fontFamily: string;
-  fontSize: string;
-  tasks: Task[];
-  selectedTaskId: string;
-  setSelectedTask: (taskId: string) => void;
-  onExpanderClick: (task: Task) => void;
-  columns: ColumnOption[],
-}> = ({
+export const TaskListTableDefault: TaskListTable = ({
   rowHeight,
   tasks,
   fontFamily,
@@ -54,7 +45,7 @@ export const TaskListTableDefault: React.FC<{
                 </div>
               </td>
 
-              {columns.map(col => {
+              {columns?.map(col => {
                 const value = col.dataPath.split('.').reduce((a, b) => a ? a[b] : null, t as any);
                 const style = col.style ?? {};
                 if (col.width) style.width = col.width;

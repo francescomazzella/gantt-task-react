@@ -15,7 +15,7 @@ export type TaskGanttContentProps = {
   tasks: BarTask[];
   dates: Date[];
   ganttEvent: GanttEvent;
-  selectedTask: BarTask | undefined;
+  selectedTasks: BarTask[];
   rowHeight: number;
   columnWidth: number;
   timeStep: number;
@@ -31,14 +31,14 @@ export type TaskGanttContentProps = {
   showBorderOnSelection: boolean;
   setGanttEvent: (value: GanttEvent) => void;
   setFailedTask: (value: BarTask | null) => void;
-  setSelectedTask: (taskId: string) => void;
+  onTaskSelection: (taskId: string, ctrlKey: boolean, shiftKey: boolean) => void;
 } & EventOption;
 
 export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
   tasks,
   dates,
   ganttEvent,
-  selectedTask,
+  selectedTasks,
   rowHeight,
   columnWidth,
   timeStep,
@@ -53,7 +53,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
   showBorderOnSelection,
   setGanttEvent,
   setFailedTask,
-  setSelectedTask,
+  onTaskSelection,
   onDateChange,
   onProgressChange,
   onDoubleClick,
@@ -202,15 +202,10 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
   const handleBarEventStart = async (
     action: GanttContentMoveAction,
     task: BarTask,
-    event?: React.MouseEvent | React.KeyboardEvent
+    event: React.MouseEvent | React.KeyboardEvent
   ) => {
-    if (!event) {
-      if (action === "select") {
-        setSelectedTask(task.id);
-      }
-    }
     // Keyboard events
-    else if (isKeyboardEvent(event)) {
+    if (isKeyboardEvent(event)) {
       if (action === "delete") {
         if (onDelete) {
           try {
@@ -240,6 +235,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
     } else if (action === "dblclick") {
       !!onDoubleClick && onDoubleClick(task);
     } else if (action === "click") {
+      onTaskSelection(task.id, event.ctrlKey, event.shiftKey);
       !!onClick && onClick(task);
     }
     // Change task event start
@@ -297,7 +293,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
               isDelete={!task.isDisabled}
               onEventStart={handleBarEventStart}
               key={task.id}
-              isSelected={!!selectedTask && task.id === selectedTask.id}
+              isSelected={selectedTasks.includes(task)}
               rtl={rtl}
               showName={showNames}
               showBorderOnSelection={showBorderOnSelection}

@@ -65,11 +65,13 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   onClick,
   onDelete,
   onSelect,
+  onSelectionChange,
   onExpanderClick,
   columns,
   containerCustomClass,
   taskListCustomClass,
   ganttCustomClass,
+  multiselection = false,
 }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const taskListRef = useRef<HTMLTableElement>(null);
@@ -93,12 +95,22 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     [rowHeight, barFill]
   );
 
-  const [selectedTask, setSelectedTask] = useState<BarTask>();
+  const [activeTask, setActiveTask] = useState<BarTask>();
+  const [selectedTasks, setSelectedTasks] = useState<BarTask[]>([]);
   const [failedTask, setFailedTask] = useState<BarTask | null>(null);
+
+  useEffect(() => {
+    onSelectionChange?.(selectedTasks, activeTask);
+  }, [selectedTasks]);
+
+  useEffect(() => {
+    activeTask && onSelect?.(activeTask, true);
+    return () => activeTask && onSelect?.(activeTask, false);
+  }, [activeTask]);
 
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   useEffect(() => {
-    const handleWindowMouseMove = (event: MouseEvent) => {
+    const handleWindowMouseMove: (this: Window, ev: MouseEvent) => any = (event: MouseEvent) => {
       setMousePosition({
         x: event.clientX,
         y: event.clientY,
@@ -266,24 +278,41 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     }
   }, [ganttHeight, tasks, headerHeight, rowHeight]);
 
-  /**
-   * Task select event
-   */
-  const handleSelectedTask = (taskId: string) => {
-    const newSelectedTask = barTasks.find(t => t.id === taskId);
-    const oldSelectedTask = barTasks.find(
-      t => !!selectedTask && t.id === selectedTask.id
-    );
-    if (onSelect) {
-      if (oldSelectedTask) {
-        onSelect(oldSelectedTask, false);
-      }
-      if (newSelectedTask) {
-        onSelect(newSelectedTask, true);
-      }
+  const handleTaskSelection = (taskId: string, ctrlKey: boolean, shiftKey: boolean) => {
+    const clickedTask = barTasks.find(t => t.id === taskId);
+    if (!clickedTask) return;
+    onClick?.(clickedTask);
+    if (!multiselection) {
+      setSelectedTasks([clickedTask]);
+      setActiveTask(clickedTask);
+      return;
     }
-    setSelectedTask(newSelectedTask);
+    if (!ctrlKey && !shiftKey) {
+      setSelectedTasks([clickedTask]);
+      setActiveTask(clickedTask);
+      return;
+    }
+    if ((!shiftKey && ctrlKey) || (shiftKey && !activeTask)) {
+      if (!selectedTasks.includes(clickedTask)) {
+        setSelectedTasks([...selectedTasks, clickedTask]);
+        setActiveTask(clickedTask);
+      } else {
+        const newSelectedTasks = [...selectedTasks];
+        newSelectedTasks.splice(selectedTasks.indexOf(clickedTask), 1);
+        setSelectedTasks(newSelectedTasks);
+      }
+      return;
+    }
+    if (shiftKey) {
+      if (!activeTask) return;
+      const fromIndex = barTasks.indexOf(activeTask);
+      const toIndex = barTasks.indexOf(clickedTask);
+      const tasksToAdd = barTasks.slice(Math.min(fromIndex, toIndex), Math.max(fromIndex, toIndex) + 1);
+      setSelectedTasks(Array.from(new Set<BarTask>([...selectedTasks, ...tasksToAdd])));
+      setActiveTask(clickedTask);
+    }
   };
+
   const handleExpanderClick = (task: Task) => {
     if (onExpanderClick && task.hideChildren !== undefined) {
       onExpanderClick({ ...task, hideChildren: !task.hideChildren });
@@ -312,7 +341,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     tasks: barTasks,
     dates: dateSetup.dates,
     ganttEvent,
-    selectedTask,
+    selectedTasks,
     rowHeight,
     taskHeight,
     columnWidth,
@@ -327,7 +356,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     showBorderOnSelection,
     setGanttEvent,
     setFailedTask,
-    setSelectedTask: handleSelectedTask,
+    onTaskSelection: handleTaskSelection,
     onDateChange,
     onProgressChange,
     onDoubleClick,
@@ -345,9 +374,9 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     headerHeight,
     ganttHeight,
     horizontalContainerClass: styles.horizontalContainer,
-    selectedTask,
+    selectedTasks,
     taskListRef,
-    setSelectedTask: handleSelectedTask,
+    onTaskSelection: handleTaskSelection,
     onExpanderClick: handleExpanderClick,
     TaskListHeader,
     TaskListTable,

@@ -22,7 +22,7 @@ export type TaskItemProps = {
   onEventStart: (
     action: GanttContentMoveAction,
     selectedTask: BarTask,
-    event?: React.MouseEvent | React.KeyboardEvent
+    event: React.MouseEvent | React.KeyboardEvent
   ) => any;
 };
 
@@ -106,9 +106,6 @@ export const TaskItem: React.FC<TaskItemProps> = props => {
       }}
       onClick={e => {
         onEventStart("click", task, e);
-      }}
-      onFocus={() => {
-        onEventStart("select", task);
       }}
     >
       {taskItem}
