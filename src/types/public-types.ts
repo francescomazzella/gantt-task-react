@@ -179,5 +179,6 @@ export interface TableOption {
 
 export interface GanttProps extends EventOption, DisplayOption, StylingOption, TableOption {
   tasks: Task[];
+  selectedTasks?: (string | Task)[];
   multiselection?: boolean;
 }

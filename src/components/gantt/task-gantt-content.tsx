@@ -293,7 +293,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
               isDelete={!task.isDisabled}
               onEventStart={handleBarEventStart}
               key={task.id}
-              isSelected={selectedTasks.includes(task)}
+              isSelected={selectedTasks.some(st => st.id === task.id)}
               rtl={rtl}
               showName={showNames}
               showBorderOnSelection={showBorderOnSelection}

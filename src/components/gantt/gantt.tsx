@@ -72,6 +72,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   taskListCustomClass,
   ganttCustomClass,
   multiselection = false,
+  selectedTasks: initialSelectedTasks = undefined,
 }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const taskListRef = useRef<HTMLTableElement>(null);
@@ -95,9 +96,13 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     [rowHeight, barFill]
   );
 
+  const selectedTasksState = (initialSelectedTasks?.map((s: string | Task) => (typeof s === 'string') ? tasks.find(t => t.id === s) : s).filter(t => t) ?? []) as BarTask[];
+
   const [activeTask, setActiveTask] = useState<BarTask>();
-  const [selectedTasks, setSelectedTasks] = useState<BarTask[]>([]);
+  const [selectedTasks, setSelectedTasks] = useState<BarTask[]>(selectedTasksState);
   const [failedTask, setFailedTask] = useState<BarTask | null>(null);
+
+  // console.log(selectedTasks);
 
   useEffect(() => {
     onSelectionChange?.(selectedTasks, activeTask);
@@ -293,22 +298,27 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
       return;
     }
     if ((!shiftKey && ctrlKey) || (shiftKey && !activeTask)) {
-      if (!selectedTasks.includes(clickedTask)) {
+      if (!selectedTasks.some(st => st.id === clickedTask.id)) {
         setSelectedTasks([...selectedTasks, clickedTask]);
         setActiveTask(clickedTask);
       } else {
         const newSelectedTasks = [...selectedTasks];
-        newSelectedTasks.splice(selectedTasks.indexOf(clickedTask), 1);
+        newSelectedTasks.splice(selectedTasks.findIndex(st => st.id === clickedTask.id), 1);
         setSelectedTasks(newSelectedTasks);
       }
       return;
     }
     if (shiftKey) {
       if (!activeTask) return;
-      const fromIndex = barTasks.indexOf(activeTask);
-      const toIndex = barTasks.indexOf(clickedTask);
+      const fromIndex = barTasks.findIndex(t => t.id === activeTask.id);
+      const toIndex = barTasks.findIndex(t => t.id === clickedTask.id);
       const tasksToAdd = barTasks.slice(Math.min(fromIndex, toIndex), Math.max(fromIndex, toIndex) + 1);
-      setSelectedTasks(Array.from(new Set<BarTask>([...selectedTasks, ...tasksToAdd])));
+      const newSelectedTasks: BarTask[] = [...selectedTasks];
+      tasksToAdd.forEach(nt => {
+        if (newSelectedTasks.some(st => st.id === nt.id)) return;
+        newSelectedTasks.push(nt);
+      })
+      setSelectedTasks(newSelectedTasks);
       setActiveTask(clickedTask);
     }
   };
