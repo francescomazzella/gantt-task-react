@@ -19,6 +19,7 @@ import { convertToBarTasks } from "../../helpers/bar-helper";
 import { GanttEvent } from "../../types/gantt-task-actions";
 import { DateSetup } from "../../types/date-setup";
 import { removeHiddenTasks, sortTasks } from "../../helpers/other-helper";
+import { NoData } from "../other/no-data";
 import styles from "./gantt.module.css";
 
 export const Gantt: React.FunctionComponent<GanttProps> = ({
@@ -73,6 +74,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   ganttCustomClass,
   multiselection = false,
   selectedTasks: initialSelectedTasks = undefined,
+  NoDataContent = NoData,
 }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const taskListRef = useRef<HTMLTableElement>(null);
@@ -101,8 +103,6 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   const [activeTask, setActiveTask] = useState<BarTask>();
   const [selectedTasks, setSelectedTasks] = useState<BarTask[]>(selectedTasksState);
   const [failedTask, setFailedTask] = useState<BarTask | null>(null);
-
-  // console.log(selectedTasks);
 
   useEffect(() => {
     onSelectionChange?.(selectedTasks, activeTask);
@@ -393,39 +393,49 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     columns,
     taskListCustomClass,
   };
+
+  const noDataProps = {
+    fontFamily,
+    fontSize,
+    locale,
+  };
+
   return (
-    <div
-      className={`${styles.wrapper} ${containerCustomClass ?? ''}`}
-      tabIndex={0}
-      ref={wrapperRef}
-    >
-      {!hideTable && <TaskList {...tableProps} />}
-      <TaskGantt
-        gridProps={gridProps}
-        calendarProps={calendarProps}
-        barProps={barProps}
-        ganttHeight={ganttHeight}
-        customClass={ganttCustomClass}
-      />
-      {showTooltip && ganttEvent.changedTask && (
-        <Tooltip
-          arrowIndent={arrowIndent}
-          rowHeight={rowHeight}
-          svgContainerHeight={svgContainerHeight}
-          svgContainerWidth={svgContainerWidth}
-          fontFamily={fontFamily}
-          fontSize={fontSize}
-          mouseX={mousePosition.x}
-          mouseY={mousePosition.y}
-          task={ganttEvent.changedTask}
-          headerHeight={headerHeight}
-          taskListWidth={taskListWidth}
-          TooltipContent={TooltipContent}
-          locale={locale}
-          rtl={rtl}
-          svgWidth={svgWidth}
+    <div>
+      <div
+        className={`${styles.wrapper} ${containerCustomClass ?? ''}`}
+        tabIndex={0}
+        ref={wrapperRef}
+      >
+        {!hideTable && <TaskList {...tableProps} />}
+        <TaskGantt
+          gridProps={gridProps}
+          calendarProps={calendarProps}
+          barProps={barProps}
+          ganttHeight={ganttHeight}
+          customClass={ganttCustomClass}
         />
-      )}
+        {showTooltip && ganttEvent.changedTask && (
+          <Tooltip
+            arrowIndent={arrowIndent}
+            rowHeight={rowHeight}
+            svgContainerHeight={svgContainerHeight}
+            svgContainerWidth={svgContainerWidth}
+            fontFamily={fontFamily}
+            fontSize={fontSize}
+            mouseX={mousePosition.x}
+            mouseY={mousePosition.y}
+            task={ganttEvent.changedTask}
+            headerHeight={headerHeight}
+            taskListWidth={taskListWidth}
+            TooltipContent={TooltipContent}
+            locale={locale}
+            rtl={rtl}
+            svgWidth={svgWidth}
+          />
+        )}
+      </div>
+      {tasks.length === 0 && <NoDataContent {...noDataProps} />}
     </div>
   );
 };

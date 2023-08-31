@@ -40,7 +40,7 @@ function getChildren(taskList: Task[], task: Task) {
   } else {
     tasks = taskList.filter(t => t.project && t.project === task.id);
   }
-  var taskChildren: Task[] = [];
+  const taskChildren: Task[] = [];
   tasks.forEach(t => {
     taskChildren.push(...getChildren(taskList, t));
   })
@@ -49,8 +49,8 @@ function getChildren(taskList: Task[], task: Task) {
 }
 
 export const sortTasks = (taskA: Task, taskB: Task) => {
-  const orderA = taskA.displayOrder || Number.MAX_VALUE;
-  const orderB = taskB.displayOrder || Number.MAX_VALUE;
+  const orderA = taskA.displayOrder ?? Number.MAX_VALUE;
+  const orderB = taskB.displayOrder ?? Number.MAX_VALUE;
   if (orderA > orderB) {
     return 1;
   } else if (orderA < orderB) {

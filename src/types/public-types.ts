@@ -134,6 +134,7 @@ export interface StylingOption {
   TooltipContent?: TooltipContent;
   TaskListHeader?: TaskListHeader;
   TaskListTable?: TaskListTable;
+  NoDataContent?: React.FunctionComponent;
 }
 
 export type TooltipContent = React.FC<{
@@ -163,6 +164,13 @@ export type TaskListTable = React.FC<{
   onTaskSelection: (taskId: string, ctrlKey: boolean, shiftKey: boolean) => void;
   onExpanderClick: (task: Task) => void;
 } & TableOption>
+
+export type NoDataContent = React.FC<{
+  fontFamily: string;
+  fontSize: string;
+  locale: string;
+  style?: React.CSSProperties;
+}>;
 
 export interface ColumnOption {
   header: string;

@@ -58,7 +58,9 @@ const drownPathAndTriangle = (
   taskHeight: number,
   arrowIndent: number
 ) => {
-  const minXForToTask = tasks.slice(taskFrom.index, taskTo.index + 1).reduce((min, task) => Math.min(min, task.x1), tasks[taskFrom.index].x1);
+  const firstTaskIndex = taskFrom.index + 1;
+  const lastTaskIndex = taskTo.index + 1;
+  const minXForToTask = tasks.slice(firstTaskIndex, lastTaskIndex).reduce((min, task) => Math.min(min, task.x1), tasks[firstTaskIndex].x1);
   const indexCompare = taskFrom.index > taskTo.index ? -1 : 1;
   const taskToEndPosition = taskTo.y + taskHeight / 2;
   const taskFromEndPosition = taskFrom.x2 + arrowIndent * 2;
