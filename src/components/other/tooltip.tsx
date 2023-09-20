@@ -16,8 +16,6 @@ export type TooltipProps = {
   svgWidth: number;
   headerHeight: number;
   taskListWidth: number;
-  mouseX: number;
-  mouseY: number;
   rowHeight: number;
   fontSize: string;
   fontFamily: string;
@@ -30,8 +28,6 @@ export const Tooltip: React.FC<TooltipProps> = ({
   rtl,
   svgContainerHeight,
   svgContainerWidth,
-  mouseX,
-  mouseY,
   arrowIndent,
   fontSize,
   fontFamily,
@@ -41,6 +37,24 @@ export const Tooltip: React.FC<TooltipProps> = ({
 }) => {
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+  
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  useEffect(() => {
+    const handleWindowMouseMove: (this: Window, ev: MouseEvent) => any = (event: MouseEvent) => {
+      setMousePosition({
+        x: event.clientX,
+        y: event.clientY,
+      });
+    };
+    window.addEventListener('mousemove', handleWindowMouseMove);
+
+    return () => {
+      window.removeEventListener(
+        'mousemove',
+        handleWindowMouseMove,
+      );
+    };
+  }, []);
 
   useEffect(() => {
     if (!tooltipRef.current) return;
@@ -51,8 +65,8 @@ export const Tooltip: React.FC<TooltipProps> = ({
     const windowHeight = window.innerHeight - 20;
 
     // Calculate the position for the tooltip, keeping it inside the window boundaries
-    let x = mouseX - tooltipWidth / 2;
-    let y = mouseY + Y_OFFSET;
+    let x = mousePosition.x - tooltipWidth / 2;
+    let y = mousePosition.y + Y_OFFSET;
 
     // Adjust tooltip position if it's too close to the right or left edge
     if (x < 0) {
@@ -63,7 +77,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
 
     // Adjust tooltip position if it's too close to the bottom or top edge
     if (y + tooltipHeight > windowHeight) {
-      y = mouseY - tooltipHeight - Y_OFFSET;
+      y = mousePosition.y - tooltipHeight - Y_OFFSET;
     }
 
     setTooltipPosition(() => {
@@ -73,8 +87,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
     tooltipRef,
     task,
     arrowIndent,
-    mouseX,
-    mouseY,
+    mousePosition,
     headerHeight,
     taskListWidth,
     rowHeight,

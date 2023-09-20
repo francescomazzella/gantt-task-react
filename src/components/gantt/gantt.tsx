@@ -113,24 +113,6 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     return () => activeTask && onSelect?.(activeTask, false);
   }, [activeTask]);
 
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  useEffect(() => {
-    const handleWindowMouseMove: (this: Window, ev: MouseEvent) => any = (event: MouseEvent) => {
-      setMousePosition({
-        x: event.clientX,
-        y: event.clientY,
-      });
-    };
-    window.addEventListener('mousemove', handleWindowMouseMove);
-
-    return () => {
-      window.removeEventListener(
-        'mousemove',
-        handleWindowMouseMove,
-      );
-    };
-  }, []);
-
   const svgWidth = dateSetup.dates.length * columnWidth;
 
   // task change events
@@ -423,8 +405,6 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
             svgContainerWidth={svgContainerWidth}
             fontFamily={fontFamily}
             fontSize={fontSize}
-            mouseX={mousePosition.x}
-            mouseY={mousePosition.y}
             task={ganttEvent.changedTask}
             headerHeight={headerHeight}
             taskListWidth={taskListWidth}
