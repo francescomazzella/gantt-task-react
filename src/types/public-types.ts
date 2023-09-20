@@ -174,7 +174,7 @@ export type NoDataContent = React.FC<{
 
 export interface ColumnOption {
   header: string;
-  dataPath: string;
+  dataPath: string | string[];
   width?: string;
   style?: React.CSSProperties,
   headerStyle?: React.CSSProperties,
