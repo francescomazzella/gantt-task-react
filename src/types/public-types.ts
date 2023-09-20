@@ -106,7 +106,7 @@ export interface StylingOption {
   stickyTable?: boolean;
   hideTable?: boolean;
   showNames?: boolean;
-  showTooltip?: boolean;
+  showTooltip?: boolean | "never" | "onChange" | "always";
   fontFamily?: string;
   fontSize?: string;
   /**

@@ -104,6 +104,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   const [selectedTasks, setSelectedTasks] = useState<BarTask[]>(selectedTasksState);
   const [failedTask, setFailedTask] = useState<BarTask | null>(null);
 
+  const [showTooltipOverride, setShowTooltipOverride] = useState(false);
+
   useEffect(() => {
     onSelectionChange?.(selectedTasks, activeTask);
   }, [selectedTasks]);
@@ -221,6 +223,9 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
         action === "start" ||
         action === "progress"
       ) {
+        if (showTooltip === "onChange" && action !== "progress") {
+          setShowTooltipOverride(true);
+        }
         const prevStateTask = barTasks.find(t => t.id === changedTask.id);
         if (
           prevStateTask &&
@@ -235,6 +240,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
           setBarTasks(newTaskList);
         }
       }
+    } else if (action === "") {
+      setShowTooltipOverride(false);
     }
   }, [ganttEvent, barTasks]);
 
@@ -382,6 +389,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     locale,
   };
 
+  const actuallyShowTooltip = showTooltipOverride || (showTooltip === true || showTooltip === 'always');
+
   return (
     <div>
       <div
@@ -397,7 +406,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
           ganttHeight={ganttHeight}
           customClass={ganttCustomClass}
         />
-        {showTooltip && ganttEvent.changedTask && (
+        {actuallyShowTooltip && ganttEvent.changedTask && (
           <Tooltip
             arrowIndent={arrowIndent}
             rowHeight={rowHeight}

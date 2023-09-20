@@ -37,8 +37,8 @@ export const Tooltip: React.FC<TooltipProps> = ({
 }) => {
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
-  
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  const [mousePosition, setMousePosition] = useState<{ x: number, y: number } | null>(null);
   useEffect(() => {
     const handleWindowMouseMove: (this: Window, ev: MouseEvent) => any = (event: MouseEvent) => {
       setMousePosition({
@@ -49,15 +49,12 @@ export const Tooltip: React.FC<TooltipProps> = ({
     window.addEventListener('mousemove', handleWindowMouseMove);
 
     return () => {
-      window.removeEventListener(
-        'mousemove',
-        handleWindowMouseMove,
-      );
+      window.removeEventListener('mousemove', handleWindowMouseMove);
     };
   }, []);
 
   useEffect(() => {
-    if (!tooltipRef.current) return;
+    if (!tooltipRef.current || mousePosition === null) return;
 
     const tooltipWidth = tooltipRef.current.offsetWidth;
     const tooltipHeight = tooltipRef.current.offsetHeight;
@@ -96,6 +93,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
     rtl,
   ]);
 
+  if (mousePosition === null) return null;
   return (
     <div
       ref={tooltipRef}
