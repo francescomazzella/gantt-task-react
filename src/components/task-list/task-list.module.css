@@ -2,6 +2,7 @@
     height: var(--gantt-height);
     border-spacing: 0;
     table-layout: fixed;
+    flex-shrink: 0;
 }
 
 .sticky {

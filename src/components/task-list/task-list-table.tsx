@@ -48,7 +48,6 @@ export const TaskListTableDefault: TaskListTable = ({
               {columns?.map(col => {
                 const value = col.dataPath.split('.').reduce((a, b) => a ? a[b] : null, t as any);
                 const style = col.style ?? {};
-                if (col.width) style.width = col.width;
                 return (
                   <td
                     key={`${t.id} ${col.header}`}

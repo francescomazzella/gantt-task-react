@@ -81,6 +81,14 @@ export const TaskList: React.FC<TaskListProps> = ({
       className={`${styles.taskListTable} ${stickyTable && styles.sticky} ${taskListCustomClass ?? ''}`}
       style={{ "--gantt-height": ganttHeight ? `${ganttHeight}px` : "unset" } as React.CSSProperties}
     >
+      <colgroup>
+        <col style={{ width: 'min-content' }} />
+        {cols.map((col) => {
+          const style: React.CSSProperties = {};
+          if (col.width) style.width = col.width;
+          return <col key={`${col.dataPath}_${col.header}`} style={style} />;
+        })}
+      </colgroup>
       <TaskListHeader {...headerProps} />
       <TaskListTable {...tableProps} />
     </table>

@@ -18,7 +18,6 @@ export const TaskListHeaderDefault: TaskListHeader = ({
           <th className={`${styles.expanderCell} ${styles.tableHeaderCell}`}></th>
           {columns?.map(col => {
             const style = col.headerStyle ?? {};
-            if (col.width) style.width = col.width;
             return (
               <th
                 key={col.header}
