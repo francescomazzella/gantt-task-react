@@ -2,11 +2,11 @@ import React from "react";
 import styles from "./task-list-table.module.css";
 import { TaskListTable } from "../../types/public-types";
 
-const getDataAtPath = (data: any, dataPath: string) => dataPath.split('.').reduce((a, b) => a ? a[b] : null, data as any);
+const getDataAtPath = (data: any, dataPath: string) => dataPath.split('.').reduce((a, b) => a ? a[b] : undefined, data as any);
 const extractData = (data: any, dataPath: string | string[]) => {
   if (Array.isArray(dataPath)) {
     return dataPath.reduce((prev, current) => {
-      return prev !== data && prev !== null ? prev : getDataAtPath(data, current)
+      return prev !== data && prev !== undefined ? prev : getDataAtPath(data, current)
     }, data);
   } else {
     return getDataAtPath(data, dataPath);
