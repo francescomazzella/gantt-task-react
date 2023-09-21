@@ -6,7 +6,7 @@ const getDataAtPath = (data: any, dataPath: string) => dataPath.split('.').reduc
 const extractData = (data: any, dataPath: string | string[]) => {
   if (Array.isArray(dataPath)) {
     return dataPath.reduce((prev, current) => {
-      return prev !== data && prev !== undefined ? prev : getDataAtPath(data, current)
+      return prev !== data && prev !== null ? prev : getDataAtPath(data, current)
     }, data);
   } else {
     return getDataAtPath(data, dataPath);
