@@ -243,7 +243,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     } else if (action === "") {
       setShowTooltipOverride(false);
     }
-  }, [ganttEvent, barTasks]);
+  }, [ganttEvent, barTasks, showTooltip]);
 
   useEffect(() => {
     if (failedTask) {
@@ -390,7 +390,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   };
 
   const actuallyShowTooltip = showTooltipOverride || (showTooltip === true || showTooltip === 'always');
-
+  
   return (
     <div>
       <div
@@ -421,6 +421,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
             locale={locale}
             rtl={rtl}
             svgWidth={svgWidth}
+            changing={ganttEvent.action === "move" || ganttEvent.action === "progress" || ganttEvent.action === "start" || ganttEvent.action === "end"}
           />
         )}
       </div>

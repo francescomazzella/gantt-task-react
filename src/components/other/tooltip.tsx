@@ -20,6 +20,7 @@ export type TooltipProps = {
   fontSize: string;
   fontFamily: string;
   TooltipContent: TooltipContent;
+  changing: boolean;
 };
 export const Tooltip: React.FC<TooltipProps> = ({
   task,
@@ -34,6 +35,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
   headerHeight,
   taskListWidth,
   TooltipContent,
+  changing,
 }) => {
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
@@ -103,7 +105,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
         top: tooltipPosition.y,
       }}
     >
-      <TooltipContent task={task} fontSize={fontSize} fontFamily={fontFamily} locale={locale} />
+      <TooltipContent task={task} fontSize={fontSize} fontFamily={fontFamily} locale={locale} changing={changing} />
     </div>
   );
 };
@@ -113,6 +115,7 @@ export const StandardTooltipContent: React.FC<{
   fontSize: string;
   fontFamily: string;
   locale: string;
+  changing: boolean;
 }> = ({ task, fontSize, fontFamily, locale }) => {
   const style = {
     fontSize,

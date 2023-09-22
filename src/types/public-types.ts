@@ -142,6 +142,7 @@ export type TooltipContent = React.FC<{
   fontSize: string;
   fontFamily: string;
   locale: string;
+  changing: boolean;
 }>;
 
 export type TaskListHeader = React.FC<{
