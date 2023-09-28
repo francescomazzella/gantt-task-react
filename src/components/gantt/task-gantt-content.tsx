@@ -11,6 +11,8 @@ import {
   GanttEvent,
 } from "../../types/gantt-task-actions";
 
+import styles from "./task-gantt-content.module.css";
+
 export type TaskGanttContentProps = {
   tasks: BarTask[];
   dates: Date[];
@@ -29,6 +31,7 @@ export type TaskGanttContentProps = {
   rtl: boolean;
   showNames: boolean;
   showBorderOnSelection: boolean;
+  animateSelectedArrows?: boolean;
   setGanttEvent: (value: GanttEvent) => void;
   setFailedTask: (value: BarTask | null) => void;
   onTaskSelection: (taskId: string, ctrlKey: boolean, shiftKey: boolean) => void;
@@ -51,6 +54,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
   rtl,
   showNames,
   showBorderOnSelection,
+  animateSelectedArrows,
   setGanttEvent,
   setFailedTask,
   onTaskSelection,
@@ -260,27 +264,68 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
     }
   };
 
+  type ArrowInfo = {
+    taskFrom: BarTask;
+    taskTo: BarTask;
+    color: string | undefined;
+  };
+
+  const selectedArrows: ArrowInfo[] = [];
+  const notSelectedArrows: ArrowInfo[] = [];
+
+  tasks.forEach(task => {
+    task.barChildren.forEach(({ color, barTask: child }) => {
+      const arrowInfo = {
+        taskFrom: task,
+        taskTo: tasks[child.index],
+        color: color,
+      };
+      if (selectedTasks.some(st => st.id === child.id || st.id === task.id)) {
+        selectedArrows.push(arrowInfo);
+      } else {
+        notSelectedArrows.push(arrowInfo);
+      }
+    });
+  });
+
+  const isAnyArrowSelected = selectedArrows.length > 0;
+
   return (
     <g className="content">
-      <g className="arrows" fill={arrowColor} stroke={arrowColor}>
-        {tasks.map(task => {
-          return task.barChildren.map(({ color, barTask: child }) => {
-            return (
-              <Arrow
-                key={`Arrow from ${task.id} to ${tasks[child.index].id}`}
-                tasks={tasks}
-                taskFrom={task}
-                taskTo={tasks[child.index]}
-                rowHeight={rowHeight}
-                taskHeight={taskHeight}
-                arrowIndent={arrowIndent}
-                rtl={rtl}
-                color={color}
-              />
-            );
-          });
+      <g className="arrows" fill={arrowColor} stroke={arrowColor} opacity={isAnyArrowSelected ? 0.2 : 1}>
+        {notSelectedArrows.map(({ taskFrom, taskTo, color }) => {
+          return (
+            <Arrow
+              key={`Arrow from ${taskFrom.id} to ${taskTo.id}`}
+              tasks={tasks}
+              taskFrom={taskFrom}
+              taskTo={taskTo}
+              rowHeight={rowHeight}
+              taskHeight={taskHeight}
+              arrowIndent={arrowIndent}
+              rtl={rtl}
+              color={color}
+            />
+          );
         })}
       </g>
+      {isAnyArrowSelected && <g className={`arrows ${animateSelectedArrows ? styles.selected : ''}`} fill={arrowColor} stroke={arrowColor}>
+        {selectedArrows.map(({ taskFrom, taskTo, color }) => {
+          return (
+            <Arrow
+              key={`Arrow from ${taskFrom.id} to ${taskTo.id}`}
+              tasks={tasks}
+              taskFrom={taskFrom}
+              taskTo={taskTo}
+              rowHeight={rowHeight}
+              taskHeight={taskHeight}
+              arrowIndent={arrowIndent}
+              rtl={rtl}
+              color={color}
+            />
+          );
+        })}
+      </g>}
       <g className="bar" fontFamily={fontFamily} fontSize={fontSize}>
         {tasks.map(task => {
           return (

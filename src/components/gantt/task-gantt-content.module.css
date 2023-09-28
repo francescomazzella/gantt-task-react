@@ -1,0 +1,14 @@
+.selected {
+    animation: blink 1s infinite linear;
+}
+@media (prefers-reduced-motion: reduce) {
+    .selected {
+        animation: none;
+    }
+}
+
+@keyframes blink {
+    0% { opacity: 1; }
+    30% { opacity: 1; }
+    100% { opacity: 0.3; }
+}

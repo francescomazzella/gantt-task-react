@@ -56,6 +56,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   arrowIndent = 20,
   todayColor = "rgba(252, 248, 227, 0.5)",
   showBorderOnSelection = true,
+  animateSelectedArrows = true,
   viewDate,
   TooltipContent = StandardTooltipContent,
   TaskListHeader = TaskListHeaderDefault,
@@ -353,6 +354,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     rtl,
     showNames,
     showBorderOnSelection,
+    animateSelectedArrows,
     setGanttEvent,
     setFailedTask,
     onTaskSelection: handleTaskSelection,
@@ -405,6 +407,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
           barProps={barProps}
           ganttHeight={ganttHeight}
           customClass={ganttCustomClass}
+          animateSelectedArrows={animateSelectedArrows}
         />
         {actuallyShowTooltip && ganttEvent.changedTask && (
           <Tooltip

@@ -10,6 +10,7 @@ export type TaskGanttProps = {
   barProps: TaskGanttContentProps;
   ganttHeight: number;
   customClass?: string;
+  animateSelectedArrows?: boolean;
 };
 export const TaskGantt: React.FC<TaskGanttProps> = ({
   gridProps,
@@ -17,9 +18,9 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
   barProps,
   ganttHeight,
   customClass,
+  animateSelectedArrows,
 }) => {
   const ganttSVGRef = useRef<SVGSVGElement>(null);
-  const newBarProps = { ...barProps, svg: ganttSVGRef };
 
   return (
     <div
@@ -50,7 +51,7 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
           ref={ganttSVGRef}
         >
           <Grid {...gridProps} />
-          <TaskGanttContent {...newBarProps} />
+          <TaskGanttContent {...barProps} svg={ganttSVGRef} animateSelectedArrows={animateSelectedArrows} />
         </svg>
       </div>
     </div>

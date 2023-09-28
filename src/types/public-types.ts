@@ -128,6 +128,7 @@ export interface StylingOption {
   arrowIndent?: number;
   todayColor?: string;
   showBorderOnSelection?: boolean;
+  animateSelectedArrows?: boolean;
   containerCustomClass?: string;
   taskListCustomClass?: string;
   ganttCustomClass?: string;
