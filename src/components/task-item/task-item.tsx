@@ -40,7 +40,7 @@ export const TaskItem: React.FC<TaskItemProps> = props => {
     ...props,
   };
   const textRef = useRef<SVGTextElement>(null);
-  const [taskItem, setTaskItem] = useState<JSX.Element>(<div />);
+  const [taskItem, setTaskItem] = useState<JSX.Element | undefined>(undefined);
   const [isTextInside, setIsTextInside] = useState(true);
 
   useEffect(() => {
@@ -54,6 +54,9 @@ export const TaskItem: React.FC<TaskItemProps> = props => {
       case "smalltask":
         setTaskItem(<BarSmall {...props} />);
         break;
+      case "hidden":
+        setTaskItem(undefined);
+        break;
       default:
         setTaskItem(<Bar {...props} />);
         break;
@@ -61,26 +64,26 @@ export const TaskItem: React.FC<TaskItemProps> = props => {
   }, [task, isSelected]);
 
   useEffect(() => {
-    if (textRef.current) {
-      setIsTextInside(textRef.current.getBBox().width < task.x2 - task.x1);
+    if (textRef.current && task.typeInternal !== "hidden") {
+      setIsTextInside(textRef.current.getBBox().width < task.x2! - task.x1!);
     }
   }, [textRef, task]);
 
   const getX = () => {
-    const width = task.x2 - task.x1;
+    const width = task.x2! - task.x1!;
     const hasChild = task.barChildren.length > 0;
     if (isTextInside) {
-      return task.x1 + width * 0.5;
+      return task.x1! + width * 0.5;
     }
     if (rtl && textRef.current) {
       return (
-        task.x1 -
+        task.x1! -
         textRef.current.getBBox().width -
         arrowIndent * +hasChild -
         arrowIndent * 0.2
       );
     } else {
-      return task.x1 + width + arrowIndent * +hasChild + arrowIndent * 0.2;
+      return task.x1! + width + arrowIndent * +hasChild + arrowIndent * 0.2;
     }
   };
 
@@ -109,7 +112,7 @@ export const TaskItem: React.FC<TaskItemProps> = props => {
       }}
     >
       {taskItem}
-      {showName &&
+      {showName && task.typeInternal !== "hidden" &&
         <text
           x={getX()}
           y={task.y + taskHeight * 0.5}

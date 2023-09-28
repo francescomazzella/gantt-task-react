@@ -249,7 +249,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
       const cursor = point.matrixTransform(
         svg.current.getScreenCTM()?.inverse()
       );
-      setInitEventX1Delta(cursor.x - task.x1);
+      setInitEventX1Delta(cursor.x - task.x1!);
       setGanttEvent({
         action,
         changedTask: task,
@@ -274,7 +274,9 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
   const notSelectedArrows: ArrowInfo[] = [];
 
   tasks.forEach(task => {
+    if (task.typeInternal === "hidden") return;
     task.barChildren.forEach(({ color, barTask: child }) => {
+      if (child.typeInternal === "hidden") return;
       const arrowInfo = {
         taskFrom: task,
         taskTo: tasks[child.index],
@@ -297,7 +299,6 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
           return (
             <Arrow
               key={`Arrow from ${taskFrom.id} to ${taskTo.id}`}
-              tasks={tasks}
               taskFrom={taskFrom}
               taskTo={taskTo}
               rowHeight={rowHeight}
@@ -314,7 +315,6 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
           return (
             <Arrow
               key={`Arrow from ${taskFrom.id} to ${taskTo.id}`}
-              tasks={tasks}
               taskFrom={taskFrom}
               taskTo={taskTo}
               rowHeight={rowHeight}

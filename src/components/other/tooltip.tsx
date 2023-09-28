@@ -131,7 +131,7 @@ export const StandardTooltipContent: React.FC<{
     <div className={styles.tooltipDefaultContainer} style={style}>
       <strong style={{ fontSize: parseInt(fontSize) + 6 }}>{`${task.name}`}</strong>
 
-      {task.end.getTime() - task.start.getTime() !== 0 && (
+      {task.end && task.start && task.end.getTime() - task.start.getTime() !== 0 && (
         <span className={styles.tooltipDefaultContainerParagraph}>
           <span><br />{`${toLocaleDateString(task.start, defaultDateTimeOptions)} - ${toLocaleDateString(task.end, defaultDateTimeOptions)} (${formatDuration(task.start, task.end)})`}</span>
           {!!task.progress && <span><span className={styles.tooltipDefaultContainerParagraph}>Progress: {task.progress}%</span></span>}

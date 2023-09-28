@@ -9,14 +9,14 @@ export const Project: React.FC<TaskItemProps> = ({ task, isSelected }) => {
   const processColor = isSelected
     ? task.styles.progressSelectedColor
     : task.styles.progressColor;
-  const projectWith = task.x2 - task.x1;
+  const projectWith = task.x2! - task.x1!;
 
   const projectLeftTriangle = [
     task.x1,
     task.y + task.height / 2 - 1,
     task.x1,
     task.y + task.height,
-    task.x1 + 15,
+    task.x1! + 15,
     task.y + task.height / 2 - 1,
   ].join(",");
   const projectRightTriangle = [
@@ -24,7 +24,7 @@ export const Project: React.FC<TaskItemProps> = ({ task, isSelected }) => {
     task.y + task.height / 2 - 1,
     task.x2,
     task.y + task.height,
-    task.x2 - 15,
+    task.x2! - 15,
     task.y + task.height / 2 - 1,
   ].join(",");
 

@@ -3,12 +3,12 @@ import { Task, TaskType } from "./public-types";
 export interface BarTask extends Task {
   index: number;
   typeInternal: TaskTypeInternal;
-  x1: number;
-  x2: number;
+  x1?: number;
+  x2?: number;
   y: number;
   height: number;
-  progressX: number;
-  progressWidth: number;
+  progressX?: number;
+  progressWidth?: number;
   barCornerRadius: number;
   handleWidth: number;
   barChildren: BarChildInfo[];
@@ -25,4 +25,4 @@ export type BarChildInfo = {
   color?: string,
 }
 
-export type TaskTypeInternal = TaskType | "smalltask";
+export type TaskTypeInternal = TaskType | "smalltask" | "hidden";
