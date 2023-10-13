@@ -17,7 +17,7 @@ export const Bar: React.FC<TaskItemProps> = ({
   showBorderOnSelection,
 }) => {
   const progressPoint = getProgressPoint(
-    +!rtl * task.progressWidth + task.progressX,
+    +!rtl * task.progressWidth! + task.progressX!,
     task.y,
     task.height
   );
@@ -25,27 +25,51 @@ export const Bar: React.FC<TaskItemProps> = ({
   return (
     <g className={styles.barWrapper} tabIndex={0}>
       <BarDisplay
-        x={task.x1}
+        x={task.x1!}
         y={task.y}
-        width={task.x2 - task.x1}
+        width={task.x2! - task.x1!}
         height={task.height}
-        progressX={task.progressX}
-        progressWidth={task.progressWidth}
+        progressX={task.progressX!}
+        progressWidth={task.progressWidth!}
         barCornerRadius={task.barCornerRadius}
         styles={task.styles}
         baseColor={task.baseColor}
         showBorderOnSelection={showBorderOnSelection}
         isSelected={isSelected}
         onMouseDown={e => {
-          !isLocked && isDateChangeable && onEventStart("move", task, e);
+          isDateChangeable && onEventStart("move", task, e);
         }}
       />
+      {isLocked && (
+        <g className="lockedGroup">
+          <rect
+            x={task.x1}
+            y={task.y}
+            width={task.handleWidth}
+            height={task.height}
+            className={styles.barLockedHandle}
+            ry={task.barCornerRadius}
+            rx={task.barCornerRadius}
+            fill={task.baseColor ?? 'black'}
+          />
+          <rect
+            x={task.x2! - task.handleWidth}
+            y={task.y}
+            width={task.handleWidth}
+            height={task.height}
+            className={styles.barLockedHandle}
+            ry={task.barCornerRadius}
+            rx={task.barCornerRadius}
+            fill={task.baseColor ?? 'black'}
+          />
+        </g>
+      )}
       <g className="handleGroup">
-        {!isLocked && isDateChangeable && (
+        {isDateChangeable && (
           <g>
             {/* left */}
             <BarDateHandle
-              x={task.x1 + 1}
+              x={task.x1! + 1}
               y={task.y + 1}
               width={task.handleWidth}
               height={handleHeight}
@@ -56,7 +80,7 @@ export const Bar: React.FC<TaskItemProps> = ({
             />
             {/* right */}
             <BarDateHandle
-              x={task.x2 - task.handleWidth - 1}
+              x={task.x2! - task.handleWidth - 1}
               y={task.y + 1}
               width={task.handleWidth}
               height={handleHeight}
@@ -76,30 +100,6 @@ export const Bar: React.FC<TaskItemProps> = ({
           />
         )}
       </g>
-      {isLocked && (
-        <g className="lockedGroup">
-          <rect
-            x={task.x1}
-            y={task.y}
-            width={task.handleWidth}
-            height={task.height}
-            className={styles.barLockedHandle}
-            ry={task.barCornerRadius}
-            rx={task.barCornerRadius}
-            fill={task.baseColor ?? 'black'}
-          />
-          <rect
-            x={task.x2 - task.handleWidth}
-            y={task.y}
-            width={task.handleWidth}
-            height={task.height}
-            className={styles.barLockedHandle}
-            ry={task.barCornerRadius}
-            rx={task.barCornerRadius}
-            fill={task.baseColor ?? 'black'}
-          />
-        </g>
-      )}
     </g>
   );
 };

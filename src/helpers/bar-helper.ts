@@ -289,8 +289,9 @@ export const getProgressPoint = (
 };
 
 const startByX = (x: number, xStep: number, task: BarTask) => {
-  if (x >= task.x2! - task.handleWidth * 2) {
-    x = task.x2! - task.handleWidth * 2;
+  const handleWidth = task.typeInternal === "smalltask" ? task.handleWidth : task.handleWidth * 2;
+  if (x >= task.x2! - handleWidth) {
+    x = task.x2! - handleWidth;
   }
   const steps = Math.round((x - task.x1!) / xStep);
   const additionalXValue = steps * xStep;
@@ -299,8 +300,9 @@ const startByX = (x: number, xStep: number, task: BarTask) => {
 };
 
 const endByX = (x: number, xStep: number, task: BarTask) => {
-  if (x <= task.x1! + task.handleWidth * 2) {
-    x = task.x1! + task.handleWidth * 2;
+  const handleWidth = task.typeInternal === "smalltask" ? task.handleWidth : task.handleWidth * 2;
+  if (x <= task.x1! + handleWidth) {
+    x = task.x1! + handleWidth;
   }
   const steps = Math.round((x - task.x2!) / xStep);
   const additionalXValue = steps * xStep;
@@ -417,6 +419,9 @@ const handleTaskBySVGMouseEventForBar = (
             xStep,
             timeStep
           );
+          if (changedTask.end.getTime() < changedTask.start!.getTime()) {
+            changedTask.end = changedTask.start;
+          }
         } else {
           changedTask.start = dateByX(
             newX1,
@@ -425,6 +430,9 @@ const handleTaskBySVGMouseEventForBar = (
             xStep,
             timeStep
           );
+          if (changedTask.start.getTime() > changedTask.end!.getTime()) {
+            changedTask.start = changedTask.end;
+          }
         }
         const [progressWidth, progressX] = progressWithByParams(
           changedTask.x1!,
@@ -450,6 +458,9 @@ const handleTaskBySVGMouseEventForBar = (
             xStep,
             timeStep
           );
+          if (changedTask.start.getTime() > changedTask.end!.getTime()) {
+            changedTask.start = changedTask.end;
+          }
         } else {
           changedTask.end = dateByX(
             newX2,
@@ -458,6 +469,9 @@ const handleTaskBySVGMouseEventForBar = (
             xStep,
             timeStep
           );
+          if (changedTask.end.getTime() < changedTask.start!.getTime()) {
+            changedTask.end = changedTask.start;
+          }
         }
         const [progressWidth, progressX] = progressWithByParams(
           changedTask.x1!,
