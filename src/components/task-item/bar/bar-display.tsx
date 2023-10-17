@@ -58,7 +58,7 @@ export const BarDisplay: React.FC<BarDisplayProps> = ({
         fill={getBarColor()}
         stroke={getStroke()}
         strokeWidth={getStrokeWidth()}
-        className={style.barBackground}
+        className={`task ${style.barBackground}`}
       />
       <rect
         x={progressX}

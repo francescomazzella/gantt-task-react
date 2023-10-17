@@ -273,9 +273,13 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     }
   }, [ganttHeight, tasks, headerHeight, rowHeight]);
 
-  const handleTaskSelection = (taskId: string, ctrlKey: boolean, shiftKey: boolean) => {
+  const handleTaskSelection = (taskId?: string, ctrlKey?: boolean, shiftKey?: boolean) => {
     const clickedTask = barTasks.find(t => t.id === taskId);
-    if (!clickedTask) return;
+    if (!clickedTask) {
+      setSelectedTasks([]);
+      setActiveTask(undefined);
+      return;
+    }
     onClick?.(clickedTask);
     if (!multiselection) {
       setSelectedTasks([clickedTask]);

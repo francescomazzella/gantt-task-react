@@ -34,7 +34,7 @@ export type TaskGanttContentProps = {
   animateSelectedArrows?: boolean;
   setGanttEvent: (value: GanttEvent) => void;
   setFailedTask: (value: BarTask | null) => void;
-  onTaskSelection: (taskId: string, ctrlKey: boolean, shiftKey: boolean) => void;
+  onTaskSelection: (taskId?: string, ctrlKey?: boolean, shiftKey?: boolean) => void;
 } & EventOption;
 
 export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
@@ -68,6 +68,17 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
   const [xStep, setXStep] = useState(0);
   const [initEventX1Delta, setInitEventX1Delta] = useState(0);
   const [isMoving, setIsMoving] = useState(false);
+
+  useEffect(() => {
+    const handleMouseDown = (event: MouseEvent) => {
+      if (!ganttEvent.action && !(event.target as HTMLElement).classList.contains('task')) onTaskSelection();
+    };
+    const currentSVG = svg?.current;
+    currentSVG?.addEventListener("mousedown", handleMouseDown, { passive: true });
+    return () => {
+      currentSVG?.removeEventListener("mousedown", handleMouseDown);
+    };
+  });
 
   // create xStep
   useEffect(() => {

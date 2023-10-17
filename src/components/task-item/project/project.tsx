@@ -38,7 +38,7 @@ export const Project: React.FC<TaskItemProps> = ({ task, isSelected }) => {
         height={task.height}
         rx={task.barCornerRadius}
         ry={task.barCornerRadius}
-        className={styles.projectBackground}
+        className={`task ${styles.projectBackground}`}
       />
       <rect
         x={task.progressX}
